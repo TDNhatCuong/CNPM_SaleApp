@@ -1,19 +1,24 @@
+import hashlib
 from App import db
-from sqlalchemy import String, Column, Integer, ForeignKey, Float
+from sqlalchemy import String, Column, Integer, ForeignKey, Float, Enum
 from sqlalchemy.orm import relationship
 from flask_login import UserMixin
+import enum
 
+class UserRoleEnum(enum.Enum):
+    USER = 1
+    ADMIN = 2
 
 class User(db.Model, UserMixin):
     id = Column(Integer, primary_key= True, autoincrement= True)
     name = Column(String(50), nullable=False)
     username = Column(String(50), nullable=False, unique=True)
     password = Column(String(50), nullable=False)
-    avatar =Column(String(100), default='https://toppng.com/uploads/preview/roger-berry-avatar-placeholder-11562991561rbrfzlng6h.png')
-
+    avatar = Column(String(100),
+                    default='https://toppng.com/uploads/preview/roger-berry-avatar-placeholder-11562991561rbrfzlng6h.png')
+    user_role = Column(Enum(UserRoleEnum), default=UserRoleEnum.USER)
     def __str__(self):
         return self.name
-
 
 
 class Category(db.Model):
@@ -34,13 +39,38 @@ class Product(db.Model):
     img = Column(String(100))
     category_id = Column(Integer, ForeignKey(Category.id), nullable=False)
 
+    def __str__(self):
+        return self.name
+
 
 if __name__ == "__main__":
     from App import app
     with app.app_context():
-        db.create_all()
+        #db.create_all()
 
+        import hashlib
+        u1 = User(name = 'UserNC',
+                  username = 'nhatcuong',
+                  password = str(hashlib.md5('123456'.encode('utf-8')).hexdigest()),
+                  user_role=UserRoleEnum.USER)
 
+        u2 = User(name = 'AdminNC',
+                  username = 'cuongnhat',
+                  password = str(hashlib.md5('123456'.encode('utf-8')).hexdigest()),
+                  user_role=UserRoleEnum.ADMIN)
+
+        db.session.add_all([u1, u2])
+        db.session.commit()
+
+        #
+        # import hashlib
+        # u = User(name = 'Admin',
+        #          username='admin',
+        #          password=str(hashlib.md5('12345'.encode('utf-8')).hexdigest()),
+        #          user_role=UserRoleEnum.ADMIN)
+        #
+        # db.session.add(u)
+        # db.session.commit()
 
         # c1 = Category(name='Mobile')
         # c2 = Category(name='Tablet')
