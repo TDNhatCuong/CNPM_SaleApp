@@ -62,35 +62,35 @@ if __name__ == "__main__":
         db.session.add_all([u1, u2])
         db.session.commit()
 
-        #
-        # import hashlib
-        # u = User(name = 'Admin',
-        #          username='admin',
-        #          password=str(hashlib.md5('12345'.encode('utf-8')).hexdigest()),
-        #          user_role=UserRoleEnum.ADMIN)
-        #
-        # db.session.add(u)
-        # db.session.commit()
 
-        # c1 = Category(name='Mobile')
-        # c2 = Category(name='Tablet')
-        #
-        # db.session.add(c1)
-        # db.session.add(c2)
-        # db.session.commit()
+        import hashlib
+        u = User(name = 'Admin',
+                 username='admin',
+                 password=str(hashlib.md5('12345'.encode('utf-8')).hexdigest()),
+                 user_role=UserRoleEnum.ADMIN)
 
-        # p1 = Product(name='Ipad pro 2022', price=25000000, category_id=2,
-        #              img="https://cdn.kalvo.com/uploads/img/gallery/55251-apple-iphone-15-pro-max-2.jpg")
-        # p2 = Product(name='Iphone 15', price=29000000, category_id=1,
-        #              img="https://cdn.kalvo.com/uploads/img/gallery/55251-apple-iphone-15-pro-max-2.jpg")
-        # p3 = Product(name='Iphone 13', price=19000000, category_id=1,
-        #              img="https://cdn.kalvo.com/uploads/img/gallery/55251-apple-iphone-15-pro-max-2.jpg")
-        # p4 = Product(name='Ipad mini 6', price=14000000, category_id=2,
-        #              img="https://cdn.kalvo.com/uploads/img/gallery/55251-apple-iphone-15-pro-max-2.jpg")
-        # p5 = Product(name='Samsung S23 Ultra', price=22000000, category_id=1,
-        #              img="https://cdn.kalvo.com/uploads/img/gallery/55251-apple-iphone-15-pro-max-2.jpg")
-        # p6 = Product(name='Samsung Tab S9', price=18000000, category_id=2,
-        #              img="https://cdn.kalvo.com/uploads/img/gallery/55251-apple-iphone-15-pro-max-2.jpg")
-        #
-        # db.session.add_all([p1, p2, p3, p4, p5, p6])
-        # db.session.commit()
+        db.session.add(u)
+        db.session.commit()
+
+        c1 = Category(name='Mobile')
+        c2 = Category(name='Tablet')
+
+        db.session.add(c1)
+        db.session.add(c2)
+        db.session.commit()
+
+        p1 = Product(name='Ipad pro 2022', price=25000000, category_id=2,
+                     img="https://cdn.kalvo.com/uploads/img/gallery/55251-apple-iphone-15-pro-max-2.jpg")
+        p2 = Product(name='Iphone 15', price=29000000, category_id=1,
+                     img="https://cdn.kalvo.com/uploads/img/gallery/55251-apple-iphone-15-pro-max-2.jpg")
+        p3 = Product(name='Iphone 13', price=19000000, category_id=1,
+                     img="https://cdn.kalvo.com/uploads/img/gallery/55251-apple-iphone-15-pro-max-2.jpg")
+        p4 = Product(name='Ipad mini 6', price=14000000, category_id=2,
+                     img="https://cdn.kalvo.com/uploads/img/gallery/55251-apple-iphone-15-pro-max-2.jpg")
+        p5 = Product(name='Samsung S23 Ultra', price=22000000, category_id=1,
+                     img="https://cdn.kalvo.com/uploads/img/gallery/55251-apple-iphone-15-pro-max-2.jpg")
+        p6 = Product(name='Samsung Tab S9', price=18000000, category_id=2,
+                     img="https://cdn.kalvo.com/uploads/img/gallery/55251-apple-iphone-15-pro-max-2.jpg")
+
+        db.session.add_all([p1, p2, p3, p4, p5, p6])
+        db.session.commit()
