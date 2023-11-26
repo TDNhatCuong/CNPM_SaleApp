@@ -17,7 +17,7 @@ def index():
 
     total = dao.count_product()
 
-    return render_template("index.html", categories=cates,
+    return render_template("index.html",
                            products=products,
                            pages=math.ceil(total / app.config['PAGE_SIZE']))
 
@@ -47,26 +47,34 @@ def add_cart():
         cart = {}
 
     data = request.json
-    id = str(data.get('id'))
+    print(data)
+    id = str(data.get("id"))
 
-    if id in cart:  # Sp đã có trong giỏ
+    if id in cart: # san pham da co trong gio
         cart[id]["quantity"] = cart[id]["quantity"] + 1
-    else:           # Sp ch có trong giỏ
+    else: # san pham chua co trong gio
         cart[id] = {
             "id": id,
             "name": data.get("name"),
             "price": data.get("price"),
             "quantity": 1
         }
+
     session['cart'] = cart
 
     return jsonify(utils.count_cart(cart))
 
 
-@app.route('/cart')_
+@app.route('/cart')
 def cart_list():
     return render_template('cart.html')
 
+@app.context_processor
+def common_resp():
+    return {
+        'categories': dao.load_categories(),
+        'cart': utils.count_cart(session.get('cart'))
+    }
 
 @login.user_loader
 def load_user(user_id):
