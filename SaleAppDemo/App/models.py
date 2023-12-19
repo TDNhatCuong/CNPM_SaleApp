@@ -1,6 +1,6 @@
 import hashlib
 from App import db
-from sqlalchemy import String, Column, Integer, ForeignKey, Float, Enum
+from sqlalchemy import String, Column, Integer, ForeignKey, Float, Enum, DateTime, Boolean
 from sqlalchemy.orm import relationship
 from flask_login import UserMixin
 import enum
@@ -17,6 +17,8 @@ class User(db.Model, UserMixin):
     avatar = Column(String(100),
                     default='https://toppng.com/uploads/preview/roger-berry-avatar-placeholder-11562991561rbrfzlng6h.png')
     user_role = Column(Enum(UserRoleEnum), default=UserRoleEnum.USER)
+    receipts = relationship('Receipt', backref='user', lazy=True)
+
     def __str__(self):
         return self.name
 
@@ -38,9 +40,33 @@ class Product(db.Model):
     price = Column(Float, default=0)
     img = Column(String(100))
     category_id = Column(Integer, ForeignKey(Category.id), nullable=False)
+    receipt_details = relationship('ReceiptDetails', backref='product', lazy=True)
 
     def __str__(self):
         return self.name
+
+
+class BaseModel(db.Model):
+    __abstract__ = True
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    created_date = Column(DateTime)
+    active = Column(Boolean, default=True)
+
+
+class Receipt(BaseModel):
+    user_id = Column(Integer, ForeignKey(User.id), nullable=False)
+    receipt_details = relationship('ReceiptDetails', backref='receipt', lazy=True)
+
+
+class ReceiptDetails(BaseModel):
+    quantity = Column(Integer, default=0)
+    price = Column(Float, default=0)
+    receipt_id = Column(Integer, ForeignKey(Receipt.id), nullable=False)            #Thuoc hoa don nao
+    product_id = Column(Integer, ForeignKey(Product.id), nullable=False)            #Thuoc san pham nao
+
+
+
 
 
 if __name__ == "__main__":
@@ -49,22 +75,23 @@ if __name__ == "__main__":
         db.create_all()
 
         # import hashlib
-        # u1 = User(name = 'UserNC',
-        #           username = 'nhatcuong',
-        #           password = str(hashlib.md5('123456'.encode('utf-8')).hexdigest()),
+        #
+        # u1 = User(name='UserNC',
+        #           username='nhatcuong',
+        #           password=str(hashlib.md5('123456'.encode('utf-8')).hexdigest()),
         #           user_role=UserRoleEnum.USER)
         #
-        # u2 = User(name = 'AdminNC',
-        #           username = 'cuongnhat',
-        #           password = str(hashlib.md5('123456'.encode('utf-8')).hexdigest()),
+        # u2 = User(name='AdminNC',
+        #           username='cuongnhat',
+        #           password=str(hashlib.md5('123456'.encode('utf-8')).hexdigest()),
         #           user_role=UserRoleEnum.ADMIN)
         #
         # db.session.add_all([u1, u2])
         # db.session.commit()
         #
-        #
         # import hashlib
-        # u = User(name = 'Admin',
+        #
+        # u = User(name='Admin',
         #          username='admin',
         #          password=str(hashlib.md5('12345'.encode('utf-8')).hexdigest()),
         #          user_role=UserRoleEnum.ADMIN)
@@ -94,3 +121,4 @@ if __name__ == "__main__":
         #
         # db.session.add_all([p1, p2, p3, p4, p5, p6])
         # db.session.commit()
+
