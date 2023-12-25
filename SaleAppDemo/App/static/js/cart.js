@@ -37,7 +37,7 @@ function updateCart(id, obj){           //obj là this bên cart.html trên sự
 
         let t = document.getElementsByClassName('cart-totalPrice');
         for (let d of t)
-            d.innerText = data.total_amount
+            d.innerText = new Intl.NumberFormat().format(data.total_amount)
     });
 }
 
@@ -54,7 +54,7 @@ function deleteCart(id, obj){
 
             let t = document.getElementsByClassName('cart-totalPrice');
             for (let d of t)
-                d.innerText = data.total_amount
+                d.innerText = new Intl.NumberFormat().format(data.total_amount)
 
             let r = document.getElementById(`product${id}`);
             r.style.display = "none";
