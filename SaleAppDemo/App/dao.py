@@ -1,6 +1,9 @@
-from App.models import Category, Product, User
+from App.models import Category, Product, User, Receipt, ReceiptDetails
 import hashlib
-from App import app
+from App import app, db
+import cloudinary.uploader
+from flask_login import current_user
+from sqlalchemy import func
 
 
 def load_categories():
@@ -95,3 +98,38 @@ def auth_user(username, password):
     password = str(hashlib.md5(password.strip().encode('utf-8')).hexdigest())
     return User.query.filter(User.username.__eq__(username.strip()),
                             User.password.__eq__(password)).first()
+
+
+def add_user(name, username, password, avatar):
+    password= str(hashlib.md5(password.strip().encode('utf-8')).hexdigest())
+    u = User(name=name, username=username,password=password)
+    if avatar:
+        res = cloudinary.uploader.upload(avatar)
+        u.avatar = res['secure_url']
+
+    db.session.add(u)
+    db.session.commit()
+
+
+def add_receipt(cart):
+    if cart:
+        r = Receipt(user=current_user)
+        db.session.add(r)
+
+        for c in cart.values():
+            d = ReceiptDetails(quantity=c['quantity'], price=c['price'],
+                               receipt=r, product_id=c['id'])
+            db.session.add(d)
+
+        db.session.commit()
+
+
+
+#Đếm thống kê 1 danh mục có bn sản phẩm và vẽ biểu đồ
+def count_products_by_cate():
+    return (db.session.query(Category.id, Category.name,
+            func.count(Product.id)).join(Product, Product.category_id == Category.id, isouter=True)).group_by(Category.id).all()
+
+if __name__ == '__main__':
+    with app.app_context():
+        print(count_products_by_cate())

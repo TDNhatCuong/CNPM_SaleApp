@@ -4,6 +4,7 @@ from sqlalchemy import String, Column, Integer, ForeignKey, Float, Enum, DateTim
 from sqlalchemy.orm import relationship
 from flask_login import UserMixin
 import enum
+from datetime import datetime
 
 class UserRoleEnum(enum.Enum):
     USER = 1
@@ -50,7 +51,7 @@ class BaseModel(db.Model):
     __abstract__ = True
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    created_date = Column(DateTime)
+    created_date = Column(DateTime, default=datetime.now())
     active = Column(Boolean, default=True)
 
 
