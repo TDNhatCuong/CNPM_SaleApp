@@ -3,7 +3,7 @@ from flask_admin import Admin, BaseView, expose, AdminIndexView
 from App import app, db, dao
 from App.models import Category, Product, UserRoleEnum
 from flask_login import logout_user, current_user
-from flask import redirect
+from flask import redirect, request
 
 
 class MyAdminIndex(AdminIndexView):
@@ -45,7 +45,10 @@ class MyCategoryView(AuthenticatedAdmin1):
 class MyStatsView(AuthenticatedAdmin2):
     @expose('/')
     def index(self):
-        return self.render('admin/stats.html')
+        kw = request.args.get("kw")
+        return self.render('admin/stats.html',
+                           stats=dao.revenue_stats(kw),
+                           month_stats = dao.revenue_stats_by_month())
 
 class MyLogoutView(BaseView):
     @expose('/')
